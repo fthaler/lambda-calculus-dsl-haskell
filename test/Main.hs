@@ -24,6 +24,8 @@ symMap "x" = 42
 symMap "y" = -42
 symMap "z" = 0
 
+fullOpt = constantProp . doubleNegElimination . pushNeg
+
 tests = [
         testGroup "eval" [
             testCase "eval ex1" (eval ex1 @?= 3),
@@ -92,6 +94,20 @@ tests = [
             testCase "constantProp ex10" (view (constantProp ex10) @?= "\\x0 -> x0 * 2"),
             testCase "constantProp ex11" (view (constantProp ex11) @?= "\\x0 -> x0 * x0"),
             testCase "constantProp ex12" (view (constantProp ex12) @?= "\\x1 -> \\x0 -> x1 + x0")
+        ],
+        testGroup "fullOpt" [
+            testCase "fullOpt ex1" (view (fullOpt ex1) @?= "3"),
+            testCase "fullOpt ex2" (view (fullOpt ex2) @?= "-1"),
+            testCase "fullOpt ex3" (view (fullOpt ex3) @?= "-1"),
+            testCase "fullOpt ex4" (view (fullOpt ex4) @?= "1 + x"),
+            testCase "fullOpt ex5" (view (fullOpt ex5) @?= "1 + x * y"),
+            testCase "fullOpt ex6" (view (fullOpt ex6) @?= "-2 + x"),
+            testCase "fullOpt ex7" (view (fullOpt ex7) @?= "-2 + -x"),
+            testCase "fullOpt ex8" (view (fullOpt ex8) @?= "3"),
+            testCase "fullOpt ex9" (view (fullOpt ex9) @?= "-2 + -x + z"),
+            testCase "fullOpt ex10" (view (fullOpt ex10) @?= "\\x0 -> x0 * 2"),
+            testCase "fullOpt ex11" (view (fullOpt ex11) @?= "\\x0 -> x0 * x0"),
+            testCase "fullOpt ex12" (view (fullOpt ex12) @?= "\\x1 -> \\x0 -> x1 + x0")
         ]
     ]
 
